@@ -30,7 +30,73 @@
       <link rel="stylesheet" href="//media.twiliocdn.com/taskrouter/quickstart/agent.css"/>
     <script src="//media.twiliocdn.com/taskrouter/js/v1.0/taskrouter.worker.min.js"></script>
     <script src="agent.js"></script>
-    <script srv="phone.js"></script>
+    <script type="text/javascript">
+     $(document).ready(function(){
+                Twilio.Device.setup("<?php echo $token->generateToken();?>");
+                        var connection=null;
+                        
+                        $("#call").click(function() {
+                                params = { "number" : $('#number').val()}; 
+                                connection = Twilio.Device.connect(params);
+                        });
+                        $("#hangup").click(function() {  
+                                Twilio.Device.disconnectAll();
+                        });
+                        $("#dequeue").click(function() {
+                                connection = Twilio.Device.connect();
+                        });
+                        Twilio.Device.ready(function (device) {
+                                $('#status').text('Registered');
+                        });
+                        Twilio.Device.incoming(function (conn) {
+                                if (confirm('Accept incoming call from ' + conn.parameters.From + '?')){
+                                        connection=conn;
+                                    conn.accept();
+                                }
+                        });
+
+                        Twilio.Device.offline(function (device) {
+                                $('#status').text('Not Registered');
+                        });
+
+                        Twilio.Device.error(function (error) {
+                                $('#status').text(error);
+                        });
+
+                        Twilio.Device.connect(function (conn) {
+                                $('#status').text("On Call");
+                                toggleCallStatus();
+                        });
+
+                        Twilio.Device.disconnect(function (conn) {
+                                $('#status').text("Off Call");
+                                toggleCallStatus();
+                                });
+
+                        function toggleCallStatus(){
+                                $('#call').toggle();
+                                $('#hangup').toggle();
+                                $('#dialpad').toggle();
+                        }
+
+                        $.each(['0','1','2','3','4','5','6','7','8','9','star','pound'], function(index,
+                        value) { 
+                        $('#button' + value).click(function(){ 
+                                        if(connection) {
+                                                if (value=='star')
+                                                        connection.sendDigits('*')
+                                                else if (value=='pound')
+                                                        connection.sendDigits('#')
+                                                else
+                                                        connection.sendDigits(value)
+                                                return false;
+                                        } 
+                                        });
+                        });
+
+
+                });
+    </script>
 </head>
 <body>
 <div class="content">
