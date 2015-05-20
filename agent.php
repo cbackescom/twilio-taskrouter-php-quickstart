@@ -4,9 +4,11 @@
     $account_sid = '{AC********************************}';
     $auth_token = '{**********************************}';
     $workspace_sid = '{WS********************************}';
+    $twiml_dialout = ''{AP********************************};
     /* All done substituting. Mr Bergstrom would be proud. */
  
     $worker_sid = $_REQUEST['WorkerSid'];
+    $client_name = $_REQUEST['agentID'];
  
     require_once('twilio-php/Services/Twilio/CapabilityTaskRouter.php');
     $worker_capability = new Services_Twilio_TaskRouter_Worker_Capability($account_sid, $auth_token,
@@ -14,6 +16,11 @@
     $worker_capability->allowWorkerFetchAttributes();
     $worker_capability->allowWorkerActivityUpdates();
     $worker_token = $worker_capability->generateToken();
+    
+    require_one('twilio-php/Services/Twilio/Capability.php');
+    $token = new Services_Twilio_Capability($account_sid, $auth_Token);
+    $token->allowClientOutgoing($twiml_dialout);
+    $token->allowClientIncoming($clientname);
  
 ?>
 <!DOCTYPE html>
@@ -23,6 +30,7 @@
       <link rel="stylesheet" href="//media.twiliocdn.com/taskrouter/quickstart/agent.css"/>
     <script src="//media.twiliocdn.com/taskrouter/js/v1.0/taskrouter.worker.min.js"></script>
     <script src="agent.js"></script>
+    <script srv="phone.js"></script>
 </head>
 <body>
 <div class="content">
@@ -44,6 +52,46 @@
         <p class="activity">Wrap-Up</p>
         <button class="change-activity" data-next-activity="Idle">Go Available</button>
         <button class="change-activity" data-next-activity="Offline">Go Offline</button>
+    </section>
+    <section class="phone">
+    <center><?php echo 'Agent: ' .htmlspecialchars($_GET["agent"]) . ''; ?>
+                        <div id="status" style="color:#009966">
+                                Offline
+                        </div>
+                        </center>
+                        <br/>
+                        <center><input type="text" id="number" size="14" value="" name="number">
+                        <br/><br/>
+                        <input type="button" id="call" value="CALL"/>
+                        <input type="button" id="hangup" value="ENDCALL" style="display:none;"/>
+                        </center>
+                        <br/>
+                        <center>
+                        <div id="dialpad" style="display:none;">
+                        <table class='flat-table flat-table-3'>
+                        <tr>
+                        <td><input type="button" value="1" id="button1"></td>
+                        <td><input type="button" value="2" id="button2"></td>
+                        <td><input type="button" value="3" id="button3"></td>
+                        </tr>
+                        <tr>
+                        <td><input type="button" value="4" id="button4"></td>
+                        <td><input type="button" value="5" id="button5"></td>
+                        <td><input type="button" value="6" id="button6"></td>
+                        </tr>
+                        <tr>
+                        <td><input type="button" value="7" id="button7"></td>
+                        <td><input type="button" value="8" id="button8"></td>
+                        <td><input type="button" value="9" id="button9"></td>
+                        </tr>
+                        <tr>
+                        <td><input type="button" value="*" id="buttonstar"></td>
+                        <td><input type="button" value="0" id="button0"></td>
+                        <td><input type="button" value="#" id="buttonpound"></td>
+                        </tr>
+                        </table>
+                        </div>
+    </center>
     </section>
     <section class="log">
       <textarea id="log" readonly="true"></textarea>
