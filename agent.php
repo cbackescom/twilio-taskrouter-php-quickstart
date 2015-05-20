@@ -27,7 +27,7 @@
 <html>
 <head>
     <title>Customer Care - Voice Agent Screen</title>
-      <link rel="stylesheet" href="//media.twiliocdn.com/taskrouter/quickstart/agent.css"/>
+      <link rel="stylesheet" href="agent.css"/>
     <script src="//media.twiliocdn.com/taskrouter/js/v1.0/taskrouter.worker.min.js"></script>
     <script src="agent.js"></script>
     <script type="text/javascript">
