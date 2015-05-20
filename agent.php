@@ -17,7 +17,7 @@
     $worker_capability->allowWorkerActivityUpdates();
     $worker_token = $worker_capability->generateToken();
     
-    require_one('twilio-php/Services/Twilio/Capability.php');
+    require_once('twilio-php/Services/Twilio/Capability.php');
     $token = new Services_Twilio_Capability($account_sid, $auth_Token);
     $token->allowClientOutgoing($twiml_dialout);
     $token->allowClientIncoming($clientname);
