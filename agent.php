@@ -18,9 +18,10 @@
     $worker_token = $worker_capability->generateToken();
     
     require_once('twilio-php/Services/Twilio/Capability.php');
-    $token = new Services_Twilio_Capability($account_sid, $auth_Token);
-    $token->allowClientOutgoing($twiml_dialout);
-    $token->allowClientIncoming($clientname);
+    $capability = new Services_Twilio_Capability($account_sid, $auth_Token);
+    $capability->allowClientOutgoing($twiml_dialout);
+    $capability->allowClientIncoming($clientname);
+    $token = $capability->generateToken();
  
 ?>
 <!DOCTYPE html>
@@ -32,7 +33,7 @@
     <script src="agent.js"></script>
     <script type="text/javascript">
      $(document).ready(function(){
-                Twilio.Device.setup("<?php echo $token->generateToken();?>");
+                Twilio.Device.setup("<?php echo $token; ?>");
                         var connection=null;
                         
                         $("#call").click(function() {
@@ -60,7 +61,7 @@
                         });
 
                         Twilio.Device.error(function (error) {
-                                $('#status').text(error);
+                                $('#status').text(error.message);
                         });
 
                         Twilio.Device.connect(function (conn) {
